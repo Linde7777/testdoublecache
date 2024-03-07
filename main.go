@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/bradfitz/gomemcache/memcache"
 	"github.com/go-redis/redis"
-	"testing"
 )
 
 var redisClient *redis.Client
@@ -31,28 +30,6 @@ func setup() {
 		err = mcClient.Set(&memcache.Item{Key: fmt.Sprintf("key%d", i), Value: []byte(fmt.Sprintf("value%d", i))})
 		if err != nil {
 			panic(err)
-		}
-	}
-}
-
-func BenchmarkRedis(b *testing.B) {
-	for i := 0; i < b.N; i++ {
-		for j := 0; j < keyCount; j++ {
-			_, err := redisClient.Get(fmt.Sprintf("key%d", j)).Result()
-			if err != nil {
-				b.Fatal(err)
-			}
-		}
-	}
-}
-
-func BenchmarkMemcached(b *testing.B) {
-	for i := 0; i < b.N; i++ {
-		for j := 0; j < keyCount; j++ {
-			_, err := mcClient.Get(fmt.Sprintf("key%d", j))
-			if err != nil {
-				b.Fatal(err)
-			}
 		}
 	}
 }
